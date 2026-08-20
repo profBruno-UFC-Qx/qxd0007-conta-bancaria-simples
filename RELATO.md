@@ -1,30 +1,28 @@
 # :memo: Relato da Atividade
 
 ## Nome
-_Seu nome completo._
+Teste Automatizado
 
 ## Matrícula
-_Seu número de matrícula._
+0000000
 
 ## Com quem você fez essa atividade?
-_Ex: "Sozinho", "Sozinho, mas discuti dúvidas com Fulano"._
+Sozinho
 
 ## Dificuldades encontradas e aprendizado
-_Quais foram as principais dificuldades? O que você aprendeu com essa atividade?_
+Nenhuma, isso é um teste da automação de board.
 
 ## Grau de dificuldade (1 a 5)
-_1 = Muito fácil, 5 = Muito difícil._
+1
 
 ## O quão interessante foi o problema proposto (1 a 5)
-_1 = Muito chato, 5 = Muito interessante._
+5
 
 ## Tempo gasto
-_Tempo total, incluindo revisão de material, vídeos e programação (em horas)._
+0 horas
 
 ## :robot: Uso de ferramentas de Inteligência Artificial
-_Você usou alguma ferramenta de IA (ex: ChatGPT, Claude, GitHub Copilot) para resolver essa
-atividade? Se sim, indique qual(is) ferramenta(s), em quais partes você usou e como ela ajudou.
-Se não usou, indique "Não utilizei"._
+Não utilizei.
 
 <!-- kit:fim-secoes-genericas -->
 <!--
