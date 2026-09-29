@@ -179,6 +179,87 @@ public class TestConta {
         assertEquals(170, destino.getSaldo(), DELTA, "O restante deve ir para o saldo do destino");
     }
 
+    // ---------- Alteração do limite ----------
+
+    @Test
+    @DisplayName("Aumentar o limite aumenta o saldo disponível")
+    public void aumentarLimite() {
+        assertTrue(conta.alterarLimite(500), "Deve ser possivel aumentar o limite");
+        assertEquals(500, conta.getLimite(), DELTA, "O limite deve ser o novo valor informado");
+        assertEquals(2500, conta.getSaldo(), DELTA, "getSaldo() deve refletir o novo limite");
+
+        assertTrue(conta.sacar(2500), "Deve ser possivel sacar saldo + novo limite");
+        assertEquals(0, conta.getSaldo(), DELTA, "Todo o saldo disponivel foi sacado");
+        assertEquals(0, conta.getLimite(), DELTA, "Todo o novo limite foi utilizado");
+    }
+
+    @Test
+    @DisplayName("Diminuir o limite reduz o saldo disponível")
+    public void diminuirLimite() {
+        assertTrue(conta.alterarLimite(20), "Deve ser possivel diminuir o limite");
+        assertEquals(20, conta.getLimite(), DELTA, "O limite deve ser o novo valor informado");
+        assertEquals(2020, conta.getSaldo(), DELTA, "getSaldo() deve refletir o novo limite");
+        assertFalse(conta.sacar(2021), "Nao deve ser possivel sacar mais que saldo + novo limite");
+
+        assertTrue(conta.alterarLimite(0), "Deve ser possivel zerar o limite");
+        assertEquals(0, conta.getLimite(), DELTA, "O limite deve ser zero");
+        assertEquals(2000, conta.getSaldo(), DELTA, "Sem limite, o saldo disponivel e apenas o saldo");
+    }
+
+    @Test
+    @DisplayName("Não é possível definir um limite negativo")
+    public void naoPodeDefinirLimiteNegativo() {
+        assertFalse(conta.alterarLimite(-50), "Um limite negativo nao deve ser permitido");
+        assertEquals(100, conta.getLimite(), DELTA, "O limite deve permanecer inalterado");
+        assertEquals(2100, conta.getSaldo(), DELTA, "O saldo deve permanecer inalterado");
+    }
+
+    @Test
+    @DisplayName("Com parte do limite utilizada, o novo limite não pode ser menor que o valor já utilizado")
+    public void alterarLimiteComLimiteUtilizado() {
+        assertTrue(conta.sacar(2050), "Sacar um valor coberto por saldo + limite deve ser permitido");
+
+        assertFalse(conta.alterarLimite(40), "O novo limite nao pode ser menor que os 50 ja utilizados");
+        assertEquals(50, conta.getLimite(), DELTA, "O limite deve permanecer inalterado");
+        assertEquals(50, conta.getSaldo(), DELTA, "O saldo deve permanecer inalterado");
+
+        assertTrue(conta.alterarLimite(50), "O novo limite pode ser igual ao valor ja utilizado");
+        assertEquals(0, conta.getLimite(), DELTA, "Todo o novo limite ja esta utilizado");
+        assertEquals(0, conta.getSaldo(), DELTA, "Nao ha saldo disponivel");
+
+        assertTrue(conta.alterarLimite(300), "Deve ser possivel aumentar o limite");
+        assertEquals(250, conta.getLimite(), DELTA, "O limite disponivel e o novo limite menos os 50 utilizados");
+        assertEquals(250, conta.getSaldo(), DELTA, "getSaldo() deve refletir o limite disponivel");
+        assertEquals("Conta{numero=1001, saldo=0.0, limite=250.0}", conta.toString());
+    }
+
+    @Test
+    @DisplayName("Depósito restaura o limite até o novo valor do limite")
+    public void depositoRestauraOLimiteAlterado() {
+        assertTrue(conta.alterarLimite(300), "Deve ser possivel aumentar o limite");
+        assertTrue(conta.sacar(2300), "Deve ser possivel sacar saldo + novo limite");
+
+        assertTrue(conta.depositar(200), "Depositar valores positivos deve ser permitido");
+        assertEquals(200, conta.getLimite(), DELTA, "O deposito deve ir primeiro para o limite");
+        assertEquals(200, conta.getSaldo(), DELTA, "O saldo nao foi atualizado corretamente");
+
+        assertTrue(conta.depositar(150), "Depositar valores positivos deve ser permitido");
+        assertEquals(300, conta.getLimite(), DELTA, "O limite deve ser restaurado ate o novo valor (300)");
+        assertEquals(350, conta.getSaldo(), DELTA, "O restante deve ir para o saldo");
+        assertEquals("Conta{numero=1001, saldo=50.0, limite=300.0}", conta.toString());
+    }
+
+    @Test
+    @DisplayName("Alteração do limite não é registrada no extrato")
+    public void alterarLimiteNaoEntraNoExtrato() {
+        conta.alterarLimite(500);
+        conta.depositar(30);
+        conta.alterarLimite(-1);
+
+        assertArrayEquals(new double[] {30.0}, conta.verExtrato(), DELTA,
+                "A alteracao do limite nao deve ser registrada no extrato");
+    }
+
     // ---------- Extrato ----------
 
     @Test

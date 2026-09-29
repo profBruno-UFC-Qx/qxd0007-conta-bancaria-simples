@@ -36,6 +36,11 @@ public class Conta {
     }
 
 
+    public boolean alterarLimite(double novoLimite) {
+        return false;
+    }
+
+
     public double[] verExtrato() {
 
         return null;

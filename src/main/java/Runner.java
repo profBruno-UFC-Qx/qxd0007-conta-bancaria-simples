@@ -30,6 +30,9 @@ public class Runner {
         minhaConta.depositar(50);
         System.out.println(minhaConta); //Conta{numero=1001, saldo=0.0, limite=100.0}
 
+        minhaConta.alterarLimite(500);
+        System.out.println(minhaConta); //Conta{numero=1001, saldo=0.0, limite=500.0}
+
         double[] extrato = minhaConta.verExtrato();
         for(int i = 0; i < extrato.length; i++) {
             System.out.println(extrato[i]); // -200.0 500.0 -400.0 -1950.0 50.0

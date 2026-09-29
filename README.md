@@ -24,12 +24,17 @@ básicas de uma conta bancária.
   - O limite funciona como um "cheque especial": se o valor sacado for maior que o saldo, o saldo fica zerado e a diferença é descontada do limite. O saldo nunca fica negativo
   - `getSaldo()` retorna o saldo disponível para uso, isto é, o saldo mais o limite disponível
   - `getLimite()` retorna o limite ainda disponível
+- Alteração do limite
+  - O limite da conta pode ser alterado com `alterarLimite(novoLimite)`, aumentando ou diminuindo o valor total do cheque especial
+  - Não deve ser possível definir um limite negativo (o método retorna `false`)
+  - Se parte do limite já tiver sido utilizada, o novo limite não pode ser menor que o valor já utilizado (o método retorna `false`); caso contrário, o limite disponível passa a ser o novo limite menos o que já foi utilizado
+  - A alteração do limite não é uma operação financeira: não é registrada no extrato
 - Saques
   - Não deve ser possível sacar um valor negativo
   - Não deve ser possível sacar um valor maior que o saldo disponível (saldo + limite)
 - Depósitos
   - Não deve ser possível depositar um valor negativo
-  - Se parte do limite tiver sido utilizada, o depósito deve primeiro restaurar o limite (até 100) e só o que sobrar vai para o saldo
+  - Se parte do limite tiver sido utilizada, o depósito deve primeiro restaurar o limite (até o valor atual do limite da conta) e só o que sobrar vai para o saldo
 - Transferência
   - O usuário deve informar a conta de destino e o valor
   - A transferência segue as mesmas regras do saque: o valor não pode ser negativo nem maior que o saldo disponível
@@ -60,6 +65,7 @@ classDiagram
         + boolean sacar(double valor)
         + boolean depositar(double valor)
         + boolean transferir(Conta destino, double valor)
+        + boolean alterarLimite(double novoLimite)
         + double[] verExtrato()
         + String toString()
     }
@@ -101,6 +107,10 @@ public class Runner {
         // o depósito primeiro restaura o limite utilizado
         minhaConta.depositar(50);
         System.out.println(minhaConta); //Conta{numero=1001, saldo=0.0, limite=100.0}
+
+        // o limite pode ser alterado (a alteração não entra no extrato)
+        minhaConta.alterarLimite(500);
+        System.out.println(minhaConta); //Conta{numero=1001, saldo=0.0, limite=500.0}
 
         // as operações que falharam (sacar 10000 e transferir 4000000) não aparecem no extrato
         double[] extrato = minhaConta.verExtrato();
