@@ -41,7 +41,7 @@ public class TestConta {
     public void extratoInicialVazio() {
         double[] extrato = conta.verExtrato();
         assertNotNull(extrato, "verExtrato() nao deve retornar null");
-        assertEquals(0, extrato.length, "Uma conta nova nao deve ter operacoes no extrato");
+        assertArrayEquals(new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, conta.verExtrato(), DELTA, "Uma conta nova nao deve ter operacoes no extrato");
     }
 
     // ---------- Saques ----------
@@ -256,7 +256,7 @@ public class TestConta {
         conta.depositar(30);
         conta.alterarLimite(-1);
 
-        assertArrayEquals(new double[] {30.0}, conta.verExtrato(), DELTA,
+        assertArrayEquals(new double[] {30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, conta.verExtrato(), DELTA,
                 "A alteracao do limite nao deve ser registrada no extrato");
     }
 
@@ -273,7 +273,7 @@ public class TestConta {
         conta.sacar(1950);
         conta.depositar(50);
 
-        double[] esperado = {-200.0, 500.0, -400.0, -1950.0, 50.0};
+        double[] esperado = {-200.0, 500.0, -400.0, -1950.0, 50.0, 0.0, 0.0, 0.0, 0.0, 0.0};
         assertArrayEquals(esperado, conta.verExtrato(), DELTA,
                 "O extrato deve conter somente as operacoes realizadas, na ordem em que ocorreram");
     }
@@ -286,7 +286,7 @@ public class TestConta {
         conta.transferir(destino, -10);
         conta.depositar(30);
 
-        assertArrayEquals(new double[] {30.0}, conta.verExtrato(), DELTA,
+        assertArrayEquals(new double[] {30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, conta.verExtrato(), DELTA,
                 "Operacoes com valores negativos nao devem ser registradas");
     }
 
@@ -295,9 +295,9 @@ public class TestConta {
     public void transferenciaNoExtratoDoDestino() {
         conta.transferir(destino, 400);
 
-        assertArrayEquals(new double[] {-400.0}, conta.verExtrato(), DELTA,
+        assertArrayEquals(new double[] {-400.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, conta.verExtrato(), DELTA,
                 "A transferencia deve aparecer com valor negativo no extrato da origem");
-        assertArrayEquals(new double[] {400.0}, destino.verExtrato(), DELTA,
+        assertArrayEquals(new double[] {400.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, destino.verExtrato(), DELTA,
                 "A transferencia deve aparecer como deposito (valor positivo) no extrato do destino");
     }
 
